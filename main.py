@@ -1,4 +1,6 @@
 import os
+import shutil
+import sys
 
 file_extensions = {
     ".pdf": "Document",
@@ -16,29 +18,34 @@ def check_folder(folder):
         return 1
 
 def make_folders(folder):
-    folder_list = []
+    folder_list = list()
     for x in os.listdir(folder):
-        extension = x[-4:]
-        folder_name = file_extensions.get(extension)
-        if extension not in folder_list:
-            folder_list.append(extension)
+        extension = os.path.splitext(x)
+        if extension[1] not in file_extensions.keys():
+            continue
+        folder_name = file_extensions.get(extension[1])
+        if extension[1] not in folder_list:
+            folder_list.append(extension[1])
             try:
-                os.mkdir(f"{folder}\\{folder_name}")
+                os.mkdir(os.path.join(folder, folder_name))
             except OSError as e:
                 print ("Error: ", e)
 
 def organize_files(folder):
     for x in os.listdir(folder):
-        if x.endswith(".pdf"):
-            shutil.move(folder, f"{folder}{folder_name}")
-        elif x.endswith(".jpg"):
+        extension = os.path.splitext(x)
+        if extension[1] not in file_extensions.keys():
+            continue
+        folder_name = file_extensions.get(extension[1])
+        src = os.path.join(folder, x)
+        dst = os.path.join(folder, folder_name, x)
+        shutil.move(src, dst)
 
-        elif x.endswith(".txt"):
-
-        else x.endswith(".zip"):
-
-
-def main():
+def main(argv):
+    if len(argv) > 1 and argv[1] != "--dry-run":
+        print("Invalid action: " + argv[1])
+        print("Only valid action: --dry-run\nExiting Now!")
+        exit()
     print("Hello, choose the correct path to organize:")
     folder = input()
     if check_folder(folder) == 1:
@@ -46,4 +53,4 @@ def main():
     make_folders(folder)
     organize_files(folder)
 
-main()
+main(sys.argv)
