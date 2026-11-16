@@ -1,6 +1,5 @@
 import os
 import shutil
-import sys
 
 file_extensions = {
     ".pdf": "Document",
@@ -41,11 +40,7 @@ def organize_files(folder):
         dst = os.path.join(folder, folder_name, x)
         shutil.move(src, dst)
 
-def main(argv):
-    if len(argv) > 1 and argv[1] != "--dry-run":
-        print("Invalid action: " + argv[1])
-        print("Only valid action: --dry-run\nExiting Now!")
-        exit()
+def main():
     print("Hello, choose the correct path to organize:")
     folder = input()
     if check_folder(folder) == 1:
@@ -53,4 +48,4 @@ def main(argv):
     make_folders(folder)
     organize_files(folder)
 
-main(sys.argv)
+main()
